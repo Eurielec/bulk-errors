@@ -120,8 +120,9 @@ func TestAuxFuncts(t *testing.T) {
 
 	// Get fmt.Format()
 	for _, verb := range []string{"s", "+v", "#v", "q"} {
-		errs_fmt := make([]string, 2)
-		for i, err := range errs2.InnerErrors() {
+		inner_errs2 := errs2.InnerErrors()
+		errs_fmt := make([]string, len(inner_errs2))
+		for i, err := range inner_errs2 {
 			errs_fmt[i] = fmt.Sprintf("%"+fmt.Sprintf("%s", verb), err)
 		}
 		err_fmt1 := fmt.Sprintf("[" + strings.Join(errs_fmt, ", ") + "]")

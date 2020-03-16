@@ -9,11 +9,11 @@ import (
 	"github.com/juju/errors"
 )
 
-// Wraps the package juju/errors to create an usage stream of errors.
-// Perfect to return multiple and unrelated errors at once.
-
+// Errs holds an array of JujuErr (juju/errors).
+//
+// It may be embedded in also custom error types that have been converted to JujuErr.
 type Errs struct {
-	// holds inner errors.
+	// holds inner errors
 	errors []JujuErr
 }
 
@@ -32,12 +32,15 @@ type JujuErr interface {
 // Juju Error function interfaces
 type NewXFn func(error, string) error
 
-// Aux Juju Error constructor
+// Aux Juju Error constructor, panics if argument error is nil
 func getJujuErr(err error) JujuErr {
+	if err == nil {
+		panic("Error is nil")
+	}
 	jErr, ok := err.(JujuErr)
 	if !ok {
-		newerr := errors.NewErr(err.Error())
-		jErr = &newerr
+		newerr := errors.Annotate(err, err.Error())
+		jErr = newerr.(JujuErr)
 		jErr.SetLocation(2)
 	}
 	return jErr
