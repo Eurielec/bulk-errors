@@ -1,9 +1,9 @@
 PROJECT := github.com/eurielec/bulkerrs
 
-all: update-mod check-license check-fmt check
+all: update-mod check-license check-go check-doc check
 .PHONY: all
 
-check: check-license check-fmt
+check: check-license check-fmt check-doc
 	@(echo " -> Go Test")
 	go test $(PROJECT)/...
 
@@ -32,8 +32,25 @@ check-fmt:
 	fi)
 	@(go vet -all -composites=false -copylocks=false .)
 
+.PHONY: check-doc
+check-doc:
+	@(echo " -> Go Check Doc")
+	$(eval GODOC := $(shell gomarkdoc -c . 2>&1))
+	@(if [ "$(GODOC)" != "" ]; then \
+		echo "  Fail! Did you forget to run gomarkdoc?"; \
+		echo '  please run "make doc"'; \
+		exit 1; \
+	else \
+	  echo "  OK!"; \
+	fi)
+
 .PHONY: go-fmt
 go-fmt:
 	@(echo " -> Go Format")
 	@(find ./ -path "./vendor/*" -prune -o -name "*.go" -exec gofmt -l -w {} \;) | \
 		sed -e "s/^./  - fixed: /g"
+
+.PHONY: doc
+doc:
+	@(echo " -> Go Doc")
+	@(gomarkdoc .)
