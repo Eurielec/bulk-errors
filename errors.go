@@ -74,7 +74,8 @@ func (e *Errs) NewErrWithCause(other error, format string, args ...interface{}) 
 	e.errors = append(e.errors, &err)
 }
 
-func (e *Errs) Append(errs ...error) {
+func (e *Errs) Append(errs ...error) bool {
+	result := false
 	for _, err := range errs {
 		if err == nil {
 			// pass
@@ -83,8 +84,9 @@ func (e *Errs) Append(errs ...error) {
 		} else {
 			e.errors = append(e.errors, getJujuErr(err))
 		}
-
+		result = true
 	}
+	return result
 }
 
 // Appends error if condition, returns condition
