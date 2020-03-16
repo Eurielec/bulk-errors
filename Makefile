@@ -11,8 +11,8 @@ check: check-license check-fmt check-doc
 update-mod:
 	@(echo " -> Go Mod")
 	@(cd $(GOPATH)/src/$(PROJECT) && dep ensure -update)
-	@(go mod vendor)
-	@(go mod tidy)
+	@(go mod vendor -v)
+	@(go mod tidy -v)
 
 .PHONY: check-license
 check-license:
