@@ -68,7 +68,7 @@ func TestX(t *testing.T) {
 		}
 
 		// New Errs -> error
-		err := errs.ValidOrNil()
+		err := errs.ToError()
 
 		// Check errors type
 		for j, isx := range isXFns {
@@ -84,7 +84,7 @@ func TestX(t *testing.T) {
 		}
 
 		// New Errs -> error
-		err = errs.ValidOrNil()
+		err = errs.ToError()
 
 		// Check errors type
 		for j, isx := range isXFns {

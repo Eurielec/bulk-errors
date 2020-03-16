@@ -21,8 +21,8 @@ func TestConstructor(t *testing.T) {
 	errs := bulkerrs.NewErr()
 	assert.Equal(t, 0, len(errs.InnerErrors()), "Should return an Errs without errors")
 
-	// ValidOrNil
-	assert.Nil(t, errs.ValidOrNil(), "Should return a nil")
+	// ToError
+	assert.Nil(t, errs.ToError(), "Should return a nil")
 
 	// Get a Copy
 	assert.Equal(t, errs, bulkerrs.NewErrOr(&errs), "Should return an Errs copy")
@@ -34,13 +34,13 @@ func TestConstructor(t *testing.T) {
 	errs = bulkerrs.NewErrOr(err_std)
 	assert.Equal(t, 1, len(errs.InnerErrors()), "Should return a new Errs with the error appended")
 
-	// ValidOrNil
-	errs_ptr, ok := errs.ValidOrNil().(*bulkerrs.Errs)
+	// ToError
+	errs_ptr, ok := errs.ToError().(*bulkerrs.Errs)
 	assert.True(t, ok, "Should cast")
-	assert.Equal(t, errs, *errs_ptr, "ValidOrNil should return a pointer to Errs")
+	assert.Equal(t, errs, *errs_ptr, "ToError should return a pointer to Errs")
 
 	// Get a Copy
-	assert.Equal(t, errs, bulkerrs.NewErrOr(errs.ValidOrNil()), "Should return an Errs copy")
+	assert.Equal(t, errs, bulkerrs.NewErrOr(errs.ToError()), "Should return an Errs copy")
 }
 
 func TestAppend(t *testing.T) {
@@ -65,7 +65,7 @@ func TestAppend(t *testing.T) {
 
 	// Append an Errs
 	errs_aux := bulkerrs.NewErrOr(errs.InnerErrors()[2])
-	errs.Append(errs_aux.ValidOrNil())
+	errs.Append(errs_aux.ToError())
 	assert.Equal(t, 4, len(errs.InnerErrors()), "Errs should have 4 errors")
 	assert.Equal(t, errs.InnerErrors()[2], errs.InnerErrors()[3], "Errs should be the same error")
 
@@ -96,7 +96,7 @@ func TestAuxFuncts(t *testing.T) {
 	errs1.Append(err_std)
 
 	// Concat errors
-	errs_out := bulkerrs.Concat(errs1.ValidOrNil(), errs1.ValidOrNil())
+	errs_out := bulkerrs.Concat(errs1.ToError(), errs1.ToError())
 	errs1_errs := errs1.InnerErrors()
 	len_errs1_errs := len(errs1_errs)
 
@@ -116,7 +116,7 @@ func TestAuxFuncts(t *testing.T) {
 	// Init2
 	errs2 := bulkerrs.NewErr()
 	errs2.NewErr("Oopsie!")
-	errs2 = bulkerrs.Concat(errs2.ValidOrNil(), err_std)
+	errs2 = bulkerrs.Concat(errs2.ToError(), err_std)
 
 	// Get fmt.Format()
 	for _, verb := range []string{"s", "+v", "#v", "q"} {

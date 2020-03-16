@@ -114,7 +114,7 @@ func Concat(errs ...error) Errs {
 	return err
 }
 
-func (e Errs) ValidOrNil() error {
+func (e Errs) ToError() error {
 	if len(e.errors) == 0 {
 		return nil
 	}
