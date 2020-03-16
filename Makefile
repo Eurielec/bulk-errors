@@ -54,3 +54,8 @@ go-fmt:
 doc:
 	@(echo " -> Go Doc")
 	@(gomarkdoc .)
+
+.PHONY: tag
+tag:
+	@(echo " -> Git make tag")
+	@(git tag "v$(shell cat VERSION)")
